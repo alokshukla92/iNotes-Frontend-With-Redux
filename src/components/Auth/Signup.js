@@ -6,9 +6,27 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Signup = () => {
-    const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    showPassword: false,
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const togglePasswordVisibility = () => {
+    setFormData({
+      ...formData,
+      showPassword: !formData.showPassword,
+    });
+  };
   const { login } = useContext(AuthContext);
   
   const navigate = useNavigate();
@@ -16,7 +34,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/auth/createuser', { name, email, password });
+      const response = await axios.post('/api/auth/createuser', formData);
       login(response.data.authtoken);
       navigate('/');
     } catch (error) {
@@ -25,30 +43,70 @@ const Signup = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-        <input
-        type="name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Name"
-        required
-      />
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required
-      />
-      <button type="submit">Signup</button>
-    </form>
+    <div className="container mt-4">
+      <h2>Sign Up</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="inputName" className="form-label">Name</label>
+          <input
+            type="text"
+            className="form-control"
+            id="inputName"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="inputEmail" className="form-label">Email address</label>
+          <input
+            type="email"
+            className="form-control"
+            id="inputEmail"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="inputPassword" className="form-label">Password</label>
+          <div className="input-group">
+            <input
+              type={formData.showPassword ? 'text' : 'password'}
+              className="form-control"
+              id="inputPassword"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={togglePasswordVisibility}
+            >
+              {formData.showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="inputConfirmPassword" className="form-label">Confirm Password</label>
+          <input
+            type="password"
+            className="form-control"
+            id="inputConfirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit" disabled={formData.password.length < 5 || formData.password !== formData.confirmPassword} className="btn btn-primary">Signup</button>
+      </form>
+    </div>
   );
 };
 

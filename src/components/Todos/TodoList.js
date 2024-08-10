@@ -42,14 +42,19 @@ const TodoList = () => {
     setTodos(newNotes)
   };
 
+
   return (
-    <div>
+    <div className="container my-3">
       <TodoForm onAddTodo={handleAddTodo} />
-      <ul>
+      <hr className="my-4" /> {/* Add a horizontal line for separation */}
+      <h3>My Notes</h3>
+      <div className="row my-3 mx-3">
         {todos.map(todo => (
+          <div key={todo._id} className="col-md-3">
           <TodoItem key={todo._id} todo={todo} onDelete={handleDeleteTodo} onEdit={handleEditTodo} />
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

@@ -5,16 +5,11 @@ import { Navigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 
 const LoginPage = () => {
-
   const authObj = useContext(AuthContext);
-    console.log("User",authObj);
-//  children : <Navigate to="/login" />;
-
- 
   return !authObj.user ? (
     
-    <div>
-      <h2>Login</h2>
+    <div className='container my-3'>
+      <h2 className='text-center my-3'>Login To Continue</h2>
       <Login />
     </div>
   ) : <Navigate to="/" />;
